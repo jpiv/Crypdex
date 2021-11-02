@@ -3,9 +3,10 @@ const crypexInterface = require('../build/contracts/Crypdex.json');
 
 const web3 = new Web3('ws://127.0.0.1:8545')
 
-const CONTRACT_ADDR = '0x15F6AE087aB3667C782aC5A15D9Af720D0b0E19e'
-const ACC_ADDR = '0x81359D53b4ccd4E9Ab6f74503923d624c73f1969'
-const ACC_PK = '0x0798d9bed8fafe4be2cca39c114743e4497a6b30e36c6819ef491498b147f619'
+const CONTRACT_ADDR = '0x7710b4aF0eB159b30d02353F79E7ABee05788cB0'
+const ACC_ADDR = '0x7af8FFFcC5FDB9be5ddfB887881eaD8A065d7118'
+const ACC_PK = '0x45cbaeb1efa81f5416eb068af218e951db5fa47fe9bc9e098570a684d0b62ec4'
+const WETH9 = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
 
 const crypdex = new web3.eth.Contract(crypexInterface.abi, CONTRACT_ADDR);
 
@@ -20,24 +21,17 @@ const logBalances = async () => {
 
 const test = async () => {
   await logBalances()
-  await web3.eth.accounts.wallet.add(ACC_PK)
 
-  crypdex.events.RecievedAmount({}, (err, event) => {
-    if (!err) {
-      console.log('Contract received amount:',
-        web3.utils.fromWei(event.returnValues.value)
-      )
-    }
+  crypdex.events.allEvents({}, (err, { event, returnValues: {'0': val} }) => {
+    console.log('Event:', event, 'Value:', web3.utils.fromWei(val))
   })
 
-  await web3.eth.sendTransaction({
-    to: CONTRACT_ADDR,
+  const result = await crypdex.methods.swip().send({
     from: ACC_ADDR,
-    gas: 200000,
-    value: web3.utils.toWei('1'),
+    gas: 2000000,
+    value: web3.utils.toWei('2'),
   })
-
-
+  console.log(result)
   logBalances()
 }
 
