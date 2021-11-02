@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "redeploy": "npx truffle migrate --f 3 --to 3 | grep \"contract address\" | cut -b 27- | { read addr; sed -i '' -e \"s/0x.*/$addr\\\"/g\" test/runValues.json;}",
+    "deploy": "npx truffle migrate && npm run redeploy"
   },
   "author": "",
   "license": "ISC",

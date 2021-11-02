@@ -3,8 +3,8 @@ const crypexInterface = require('../build/contracts/Crypdex.json');
 
 const web3 = new Web3('ws://127.0.0.1:8545')
 
-const CONTRACT_ADDR = '0x7710b4aF0eB159b30d02353F79E7ABee05788cB0'
-const ACC_ADDR = '0x7af8FFFcC5FDB9be5ddfB887881eaD8A065d7118'
+const { CONTRACT_ADDR } = require('./runValues.json')
+const ACC_ADDR = '0xE4936D15019c34022b31A5deb815aC7b7e1f15a8'
 const ACC_PK = '0x45cbaeb1efa81f5416eb068af218e951db5fa47fe9bc9e098570a684d0b62ec4'
 const WETH9 = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
 
@@ -23,7 +23,7 @@ const test = async () => {
   await logBalances()
 
   crypdex.events.allEvents({}, (err, { event, returnValues: {'0': val} }) => {
-    console.log('Event:', event, 'Value:', web3.utils.fromWei(val))
+    console.log('Event:', event, '- Value:', web3.utils.fromWei(val))
   })
 
   const result = await crypdex.methods.swip().send({
@@ -31,7 +31,6 @@ const test = async () => {
     gas: 2000000,
     value: web3.utils.toWei('2'),
   })
-  console.log(result)
   logBalances()
 }
 
