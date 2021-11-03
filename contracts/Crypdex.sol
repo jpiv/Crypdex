@@ -71,7 +71,8 @@ contract Crypdex {
   mapping(address => UserAccount) private accounts;
 
   event ContractBalance(uint256 value);
-  event WEthConverted(uint256 balance);
+  event USDCBalance(uint256 value);
+  event WMaticConverted(uint256 balance);
   event Swapped(uint256 balance);
 
   function deposit() external payable {
@@ -88,7 +89,7 @@ contract Crypdex {
     IWMatic(WMATIC).deposit{value: msg.value}();
     account.balances[WMATIC] = IERC20(WMATIC).balanceOf(address(this));
 
-    emit WEthConverted(account.balances[WMATIC] / 1 ether);
+    emit WMaticConverted(account.balances[WMATIC] / 1 ether);
   }
 
   function purchaseFund() external payable {
@@ -96,7 +97,6 @@ contract Crypdex {
     emit ContractBalance(address(this).balance);
 
     uint256 userWethBalance = accounts[msg.sender].balances[WMATIC];
-    emit ContractBalance(userWethBalance);
 
     // Approve w/o Uniswap
     TransferHelper.safeApprove(WMATIC, BALANCER, userWethBalance);
@@ -126,7 +126,7 @@ contract Crypdex {
     emit Swapped(amountOut);
 
     emit ContractBalance(address(this).balance);
-    emit ContractBalance(IERC20(USDC).balanceOf(address(this)));
+    emit USDCBalance(IERC20(USDC).balanceOf(address(this)));
   }
 
   receive() external payable {}

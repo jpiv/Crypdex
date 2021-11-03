@@ -1,5 +1,5 @@
 const Web3 = require('web3')
-const crypexInterface = require('../build/contracts/Crypdex.json');
+const crypexInterface = require('../artifacts/contracts/Crypdex.sol/Crypdex.json');
 
 const web3 = new Web3('ws://localhost:8545')
 
@@ -20,7 +20,8 @@ const logBalances = async () => {
 const test = async () => {
   await logBalances()
 
-  crypdex.events.allEvents({}, (err, { event, returnValues: {'0': val} }) => {
+  crypdex.events.allEvents({}, (err, e) => {
+    const { event, returnValues: {'0': val} } = e
     console.log('Event:', event, '- Value:', val)
   })
 
@@ -29,7 +30,7 @@ const test = async () => {
   await crypdex.methods.deposit().send({
     from: ACC_ADDR,
     gas: 2000000,
-    value: web3.utils.toWei('2'),
+    value: web3.utils.toWei('1'),
   })
 
   // Purchase fund
